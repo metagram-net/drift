@@ -52,7 +52,7 @@ func rootCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "drift",
 		Short:   "Manage SQL migrations",
-		Version: "0.1.0",
+		Version: "0.1.1",
 		PersistentPreRunE: func(_ *cobra.Command, _ []string) error {
 			err := viper.ReadInConfig()
 			var notFound viper.ConfigFileNotFoundError
