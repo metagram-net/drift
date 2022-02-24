@@ -1,6 +1,7 @@
 package drift
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	_ "embed"
@@ -392,13 +393,15 @@ func Renumber(io IO, dir string, write bool) error {
 
 	io.Infof("Renames:")
 	{
-		t := tablewriter.NewWriter(fmtWriter(io.Infof))
+		var b bytes.Buffer
+		t := tablewriter.NewWriter(&b)
 		t.SetAutoFormatHeaders(false)
 		t.SetHeader([]string{"Old", "->", "New"})
 		for _, r := range renames {
 			t.Append([]string{r.from, "->", r.to})
 		}
 		t.Render()
+		io.Infof(b.String())
 	}
 
 	if !write {
@@ -431,10 +434,4 @@ func idWidth(files []migrationFile) int {
 
 func filename(idWidth int, id MigrationID, slug string) string {
 	return fmt.Sprintf("%0*d-%s.sql", idWidth, id, slug)
-}
-
-type fmtWriter func(format string, args ...interface{}) (n int, err error)
-
-func (f fmtWriter) Write(p []byte) (n int, err error) {
-	return f("%s", p)
 }
